@@ -4,6 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
+const os = require("os");
+const fs = require("fs");
 
 const express = require('express');
 
@@ -14,7 +16,18 @@ const HOST = '0.0.0.0';
 // App
 const app = express();
 app.get('/', (req, res) => {
-	res.send('Hello remote world!\n');
+	console.log("Reading file /home/steven/test.txt on bound volume");
+	fs.readFile('/home/steven/test.txt', 'utf8', function(err, data){
+		const hostname = os.hostname();
+		var response = 'Hello remote world from ' + hostname +'!<br>';
+		
+		if(err)
+			response+= 'Error reading test file: ' + err;
+		else
+			response+= 'Test file contents: ' + data;
+
+		res.send(response);
+	});
 });
 
 app.listen(PORT, HOST);
